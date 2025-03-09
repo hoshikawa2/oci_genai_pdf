@@ -25,7 +25,7 @@ The Python code requires certain libraries for using OCI Generative AI. Install 
 
     pip install -r requirements.txt
 
-## Understanding the Code
+## Understand the Code
 
 This a demo of OCI Generative AI for querying functionalities of Oracle SOA SUITE and Oracle Integration.
 
