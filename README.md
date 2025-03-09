@@ -45,7 +45,7 @@ Below, we will explain each section of the code.
 
 Imports the necessary libraries for processing PDFs, Oracle generative AI, text vectorization, and storage in vector databases (FAISS and Chroma).
 
-• PyPDFLoader and pymupdf4llm are used to extract text from PDFs.
+• PyPDFLoader is used to extract text from PDFs.
 
 • ChatOCIGenAI enables the use of Oracle Cloud Generative AI models to answer questions.
 
