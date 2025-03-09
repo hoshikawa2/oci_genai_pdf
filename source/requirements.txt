@@ -1,0 +1,9 @@
+chromadb==0.6.3
+chroma-hnswlib==0.7.6
+faiss-cpu
+oci-cli
+langchain
+langchain_community
+langchain_cohere
+langchain-core
+langchain-text-splitters
