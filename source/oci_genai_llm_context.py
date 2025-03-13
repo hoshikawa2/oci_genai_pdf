@@ -46,14 +46,6 @@ def chat():
     )
     retriever = vectorstore.as_retriever()
 
-    client = chromadb.PersistentClient(path="./Test")
-    collection = client.get_or_create_collection(name="test")
-
-    collection.add(
-        documents=caminhos_pdf,
-        ids=ids
-    )
-
     template = """ 
         If the query in question is not a comparison between SOA SUITE and OIC, consider only the documents relevant to the subject,
          that is, if the question is about SOA SUITE, consider only the SOA SUITE documents. If the question is about OIC,

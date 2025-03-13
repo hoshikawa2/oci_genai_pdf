@@ -85,13 +85,6 @@ Uses Oracle's embedding model to transform texts into numerical vectors, facilit
 
 ![img_10.png](images/img_10.png)
 
-### Storage in ChromaDB
-
-ChromaDB is a vector database used to store documents and enable efficient queries.
-
-Here, processed PDFs are stored for future searches.
-
-![img_11.png](images/img_11.png)
 
 ### Define the Prompt
 
