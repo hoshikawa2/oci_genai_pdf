@@ -1,4 +1,3 @@
-import chromadb
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.chat_models.oci_generative_ai import ChatOCIGenAI
 from langchain_core.prompts import PromptTemplate
@@ -45,6 +44,8 @@ def chat():
         embedding=embeddings
     )
     retriever = vectorstore.as_retriever()
+
+    #### YOU CAN PERSIST YOUR VECTOR STORE HERE
 
     template = """ 
         If the query in question is not a comparison between SOA SUITE and OIC, consider only the documents relevant to the subject,
