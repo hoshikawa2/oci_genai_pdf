@@ -1,0 +1,14 @@
+title: Analyze PDF Documents in Natural Language with OCI Generative AI
+description: Learn how to analyze PDF documents in natural language using Oracle Cloud Infrastructure Generative AI (OCI Generative AI).
+baseurl: /en/learn/oci-genai-pdf
+copyright: 2025
+copyright-last: 2025
+partno: G29356-03
+print-month: June
+print-year: 2025
+duration: PT01H0M0S
+level: Beginner
+roles: Application Administrator;Application Developer;DevOps Engineer;Developer
+products: en/cloud/oracle-cloud-infrastructure/oci;en/cloud/en/cloud/oracle-cloud-infrastructure/generative-ai
+keywords: Cloud Native
+inject-note: true
