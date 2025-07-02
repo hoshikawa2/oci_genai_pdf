@@ -14,3 +14,4 @@ chardet
 lxml
 oci
 oci-cli
+neo4j

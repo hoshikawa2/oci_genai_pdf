@@ -35,6 +35,7 @@ Download the Python code from here:
 - [`requirements.txt`](./files/requirements.txt)
 - [`oci_genai_llm_context.py`](./files/oci_genai_llm_context.py)
 - [`oci_genai_llm_context_fast.py`](./files/oci_genai_llm_context_fast.py)
+- [`oci_genai_llm_graphrag.py`](./files/oci_genai_llm_graphrag.py)
 
 You can find the PDF documents here:
 
@@ -89,9 +90,9 @@ Create a folder named `Manuals` and move these PDFs there.
   ![img_5.png](./images/img_5.png "image")
 
 
-- In the first processing execution, the vector data will be saved on a faiss database.
+- In the first processing execution, the vector data will be saved on a FAISS database.
 
-![img_6.png](./images/img_6.png "image")
+  ![img_6.png](./images/img_6.png "image")
 
 - **Define the Prompt:**
 
@@ -110,7 +111,7 @@ Create a folder named `Manuals` and move these PDFs there.
   - `llm` generates a response based on the retrieved documents.
   - `StrOutputParser` formats the final output.
 
-- ![img_7.png](images/img_7.png)
+  ![img_7.png](./images/img_7.png "image")
 
 
 - **Question and Answer Loop:**
@@ -124,7 +125,7 @@ Create a folder named `Manuals` and move these PDFs there.
   ![img_8.png](./images/img_8.png "image")
 
 
-## Fixed Size Chunking
+### Fixed Size Chunking
 
 **(A Faster Alternative: Fixed-Size Chunking)**
 
@@ -174,15 +175,15 @@ In applications like semantic search or Retrieval-Augmented Generation (RAG), po
 
 - This is a very simple method to split text:
 
-![img_10.png](images/img_10.png)
+  ![img_10.png](./images/img_10.png "image")
 
 - And this is the main process of fixed chunking:
 
-![img_11.png](images/img_11.png)
+  ![img_11.png](./images/img_11.png "image")
 
->**Note:** Download this code to process the **fixed chunking** more **faster**: [`oci_genai_llm_context_fast.py`](./files/oci_genai_llm_context_fast.py) 
+  >**Note:** Download this code to process the **fixed chunking** more **faster**: [`oci_genai_llm_context_fast.py`](./files/oci_genai_llm_context_fast.py) 
 
-## Semantic Chunking
+### Semantic Chunking
 
 **What is Semantic Chunking?**
 
@@ -197,6 +198,7 @@ Instead of cutting text arbitrarily, Semantic Chunking tries to preserve the ful
 A traditional chunking process, based on fixed size, is fast: the system just counts tokens or characters and cuts accordingly.
 
 With Semantic Chunking, several extra steps of semantic analysis are required:
+
 1.	Reading and interpreting the full text (or large blocks) before splitting:
       The LLM needs to “understand” the content to identify the best chunk boundaries.
 2.	Running LLM prompts or topic classification models:
@@ -207,17 +209,129 @@ With Semantic Chunking, several extra steps of semantic analysis are required:
 4.	Sequential and incremental decision-making:
       Semantic chunking often works in steps (e.g., analyzing 10,000-token blocks and then refining chunk boundaries inside that block), which increases total processing time.
 
->**Note 1:** Depending on your machine processing power, you will wait a long, long time to finalize the first execution using **Semantic Chunking**.
-
-
->**Note 2:** You can use this algorithm to produce customized chunking using **OCI Gen AI**.
+>**Note:** 
+> - Depending on your machine processing power, you will wait a long, long time to finalize the first execution using **Semantic Chunking**.
+> - You can use this algorithm to produce customized chunking using **OCI Generative AI**.
 
 - This is the main document process. It uses:
 
-  - **smart_split_text()**: separates the full-text in small pieces of 10kb (you can configure to adopt other strategies). The mechanism perceive the last paragraph. If part of the paragraph is in the next text piece, this part will be ignored in the processing and will be appended on the next processing text group.
-  - **semantic_chunk()**: This method will use the OCI LLM mechanism to separate the paragraphs. It includes the intelligence to identify the titles, components of a table, the paragraphs to execute a smart chunk. The strategy here is to use the **Semantic Chunk** technique. It will took more time to complete the mission if compared with the common processing. So, the first processing will took a long time but the next will load all the faiss pre-saved data.
-  - **split_llm_output_into_chapters()**: This method will finalize the chunk, separating the chapters.
-    ![img.png](images/img_9.png)
+  - **`smart_split_text()`:** Separates the full-text in small pieces of 10kb (you can configure to adopt other strategies). The mechanism perceive the last paragraph. If part of the paragraph is in the next text piece, this part will be ignored in the processing and will be appended on the next processing text group.
+  - **`semantic_chunk()`:** This method will use the OCI LLM mechanism to separate the paragraphs. It includes the intelligence to identify the titles, components of a table, the paragraphs to execute a smart chunk. The strategy here is to use the **Semantic Chunk** technique. It will took more time to complete the mission if compared with the common processing. So, the first processing will took a long time but the next will load all the FAISS pre-saved data.
+  - **`split_llm_output_into_chapters()`:** This method will finalize the chunk, separating the chapters.
+    
+    ![img.png](./images/img_9.png "image")
+
+  >**Note:** Download this code to process the **semantic chunking**: [`oci_genai_llm_context.py`](./files/oci_genai_llm_context.py)
+
+### Combining Semantic Chunking with GraphRAG
+
+**GraphRAG (Graph-Augmented Retrieval-Augmented Generation)** is an advanced AI architecture that combines traditional vector-based retrieval with structured knowledge graphs. In a standard RAG pipeline, a language model retrieves relevant document chunks using semantic similarity from a vector database (like FAISS). However, vector-based retrieval operates in an unstructured manner, relying purely on embeddings and distance metrics, which sometimes miss deeper contextual or relational meanings.
+
+**GraphRAG** enhances this process by introducing a knowledge graph layer, where entities, concepts, components, and their relationships are explicitly represented as nodes and edges. This graph-based context enables the language model to reason over relationships, hierarchies, and dependencies that vector similarity alone cannot capture.
+
+### Why Combine Semantic Chunking with GraphRAG?
+
+Semantic chunking is the process of intelligently splitting large documents into meaningful units or “chunks,” based on the content’s structure — such as chapters, headings, sections, or logical divisions. Rather than breaking documents purely by character limits or naive paragraph splitting, semantic chunking produces higher-quality, context-aware chunks that align better with human understanding.
+
+When combined with GraphRAG, semantic chunking offers several powerful advantages:
+
+  1.	Enhanced Knowledge Representation:
+
+   - Semantic chunks preserve logical boundaries in the content.
+   - Knowledge graphs extracted from these chunks maintain accurate relationships between entities, systems, APIs, processes, or services.
+
+   2.	Multi-Modal Contextual Retrieval (the language model retrieves both):
+
+   - Unstructured context from the vector database (semantic similarity).
+   - Structured context from the knowledge graph (entity-relation triples).
+   - This hybrid approach leads to more complete and accurate answers.
+
+   3.	Improved Reasoning Capabilities:
+
+   - Graph-based retrieval enables relational reasoning.
+   - The LLM can answer questions like:
+
+> “What services does the Order API depend on?” 
+
+> “Which components are part of the SOA Suite?”
+   - These relational queries are often impossible with embedding-only approaches.
+
+   4.	Higher Explainability and Traceability:
+
+   - Graph relationships are human-readable and transparent.
+   - Users can inspect how answers are derived from both textual and structural knowledge.
+
+   5.	Reduced Hallucination:
+
+- The graph acts as a constraint on the LLM, anchoring responses to verified relationships and factual connections extracted from the source documents.
+
+
+   6.	Scalability Across Complex Domains:
+
+   - In technical domains (e.g., APIs, microservices, legal contracts, healthcare standards), relationships between components are as important as the components themselves.
+   - GraphRAG combined with semantic chunking scales effectively in these contexts, preserving both textual depth and relational structure.
+
+>**Note 1:** Download this code to process the **semantic chunking** with **graphRAG**: [`oci_genai_llm_graphrag.py`](./files/oci_genai_llm_graphrag.py)
+
+>**Note 2:** You will need:
+> 
+> - A docker installed and active to use the **Neo4J** open-source graphos database to test
+> - Install **neo4j** Python Library
+
+There are 2 methods:
+
+### create_knowledge_graph 
+
+- This method automatically extracts entities and relationships from text chunks and stores them in a Neo4j knowledge graph. 
+- For each document chunk, it sends the content to a LLM (Large Language Model) with a prompt asking to extract entities (like systems, components, services, APIs) and their relationships. 
+- It parses each line, extracts Entity1, RELATION, and Entity2.
+- Stores this information as nodes and edges in the Neo4j graph database using Cypher queries:
+
+
+    MERGE (e1:Entity {name: $entity1})
+    MERGE (e2:Entity {name: $entity2})
+    MERGE (e1)-[:RELATION {source: $source}]->(e2)
+
+![img.png](images/img_12.png)
+
+### query_knowledge_graph 
+
+- This method queries the Neo4j knowledge graph to retrieve relationships related to a specific keyword or concept.
+- Executes a Cypher query that searches for:
+
+
+    Any relationship (e1)-[r]->(e2)
+    Where e1.name, e2.name, or the relationship type contains the query_text (case-insensitive).
+
+
+- Returns up to 20 matching triples formatted as:
+
+
+    Entity1 -[RELATION]-> Entity2
+
+
+![img_1.png](images/img_13.png)
+
+![img_2.png](images/img_14.png)
+
+>**Disclaimer: Neo4j Usage Notice**
+> 
+> This implementation uses Neo4j as an embedded knowledge graph database for demonstration and prototyping purposes. While Neo4j is a powerful and flexible graph database suitable for development, testing, and small to medium workloads, it may not meet the requirements for enterprise-grade, mission-critical, or highly secure workloads, especially in environments that demand high availability, scalability, and advanced security compliance.
+> 
+> For production environments and enterprise scenarios, we recommend leveraging **Oracle Database** with **Graph** capabilities, which offers:
+>
+>     Enterprise-grade reliability and security.
+> 
+>     Scalability for mission-critical workloads. 
+> 
+>     Native graph models (Property Graph and RDF) integrated with relational data. 
+> 
+>     Advanced analytics, security, high availability, and disaster recovery features. 
+> 
+>     Full Oracle Cloud Infrastructure (OCI) integration.
+> 
+> By using Oracle Database for graph workloads, organizations can unify structured, semi-structured, and graph data within a single, secure, and scalable enterprise platform.
+
 
 ## Task 3: Run Query for Oracle Integration and Oracle SOA Suite Contents
 
@@ -233,6 +347,12 @@ FOR SEMANTIC CHUNKING TECHNIQUE
 python oci_genai_llm_context.py --device="mps" --gpu_name="M2Max GPU 32 Cores"
 ```
 
+```
+FOR SEMANTIC CHUNKING COMBINED WITH GRAPHRAG TECHNIQUE
+python oci_genai_llm_graphrag.py --device="mps" --gpu_name="M2Max GPU 32 Cores"
+```
+
+
 > **Note:** The `--device` and `--gpu_name` parameters can be used to accelerate the processing in Python, using GPU if your machine has one. Consider that this code can be used with local models too.
 
 The provided context distinguishes Oracle SOA Suite and Oracle Integration, you can test the code considering these points:
@@ -244,15 +364,12 @@ The provided context distinguishes Oracle SOA Suite and Oracle Integration, you 
 We can define the following context, which greatly helps in interpreting the documents correctly.
 
 
-![img_7.png](images/img_7.png)
+![img_7.png](./images/img_7.png "image")
 
 The following image shows the example of comparison between Oracle SOA Suite and Oracle Integration.
 
 ![img.png](./images/img.png "image")
 
-The following image shows the example for Kafka.
-
-![img_1.png](./images/img_1.png "image")
 
 ## Next Steps
 
@@ -269,6 +386,8 @@ This approach can be applied in various fields, such as legal, compliance, techn
 - [Install OCI CLI](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#Quickstart)
 
 - [Introduction to Custom and Built-in Python LangChain Agents](https://wellsr.com/python/working-with-python-langchain-agents/)
+
+- [Oracle Database Insider - Graph RAG: Bring the Power of Graphs to Generative AI](https://blogs.oracle.com/database/post/graph-rag-bring-the-power-of-graphs-to-generative-ai)
 
 ## Acknowledgments
 
